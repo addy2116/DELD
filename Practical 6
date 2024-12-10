@@ -1,0 +1,87 @@
+#include <GL/glut.h>
+#include <cmath>
+
+// Variables for sun and sky
+float sunPosY = -0.6f;  // Initial sun position (below the horizon)
+float skyColor[] = {0.0f, 0.0f, 0.5f};  // Dark blue sky (night)
+bool isSunRising = true; // Flag for sunrise/sunset
+float timeOfDay = 0.0f;  // Time of day (0 = night, 1 = day)
+
+// Function to draw a circle (used for sun)
+void drawCircle(float x, float y, float radius) {
+    glBegin(GL_TRIANGLE_FAN);
+    for (int i = 0; i <= 360; i++) {
+        float angle = i * 3.14159f / 180.0f;
+        glVertex2f(x + radius * cos(angle), y + radius * sin(angle));
+    }
+    glEnd();
+}
+
+// Function to update the scene for sunrise/sunset animation
+void update(int value) {
+    // If the sun is rising
+    if (isSunRising) {
+        sunPosY += 0.01f; // Move the sun upwards
+        timeOfDay += 0.01f; // Gradually transition to day
+        if (sunPosY >= 0.6f) { // Once the sun is up
+            isSunRising = false;
+        }
+    }
+    // If the sun is setting
+    else {
+        sunPosY -= 0.01f; // Move the sun downwards
+        timeOfDay -= 0.01f; // Gradually transition to night
+        if (sunPosY <= -0.6f) { // Once the sun is down
+            isSunRising = true;
+        }
+    }
+
+    // Interpolate sky color based on time of day (gradual color change)
+    skyColor[0] = timeOfDay * 0.5f;  // Lighter blue (day)
+    skyColor[1] = timeOfDay * 0.5f;  // Lighter blue (day)
+    skyColor[2] = 0.5f + 0.5f * (1.0f - timeOfDay);  // Gradually change from dark to light
+
+    glutPostRedisplay();  // Request a redraw
+    glutTimerFunc(30, update, 0);  // Continue updating the animation
+}
+
+// Function to display the scene (sky, sun)
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Set the sky color
+    glClearColor(skyColor[0], skyColor[1], skyColor[2], 1.0f);
+
+    // Draw the sun
+    glColor3f(1.0f, 1.0f, 0.0f);  // Yellow color for the sun
+    drawCircle(0.0f, sunPosY, 0.1f);  // Draw sun at its current position
+
+    glutSwapBuffers();  // Swap buffers for smooth animation
+}
+
+// Function to initialize OpenGL
+void init() {
+    glClearColor(0.0f, 0.0f, 0.5f, 1.0f);  // Initial dark blue sky (night)
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);  // Set the orthogonal projection
+}
+
+int main(int argc, char** argv) {
+    // Initialize GLUT
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitWindowSize(800, 600);
+    glutCreateWindow("Sunrise and Sunset");
+
+    // Initialize OpenGL settings
+    init();
+
+    // Set display function and timer
+    glutDisplayFunc(display);
+    glutTimerFunc(25, update, 0);  // Start the animation loop
+
+    // Start the main GLUT loop
+    glutMainLoop();
+    return 0;
+}
