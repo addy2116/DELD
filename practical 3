@@ -1,0 +1,109 @@
+#include <graphics.h>
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+// CircleDrawer class encapsulates the circle drawing logic
+class CircleDrawer {
+private:
+    int xc, yc, r;  // Center (xc, yc) and radius r of the circle
+    
+    // DDA Circle Drawing Algorithm (used for approximation)
+    void ddaCircle() {
+        float x = 0, y = r;
+        float p = 1 - r; // Decision parameter
+        putpixel(xc + x, yc + y, YELLOW);
+        putpixel(xc - x, yc + y, YELLOW);
+        putpixel(xc + x, yc - y, YELLOW);
+        putpixel(xc - x, yc - y, YELLOW);
+
+        while (x < y) {
+            x++;
+            if (p < 0) {
+                p = p + 2 * x + 1;
+            } else {
+                y--;
+                p = p + 2 * x - 2 * y + 1;
+            }
+            putpixel(xc + x, yc + y, YELLOW);
+            putpixel(xc - x, yc + y, YELLOW);
+            putpixel(xc + x, yc - y, YELLOW);
+            putpixel(xc - x, yc - y, YELLOW);
+            putpixel(xc + y, yc + x, YELLOW);
+            putpixel(xc - y, yc + x, YELLOW);
+            putpixel(xc + y, yc - x, YELLOW);
+            putpixel(xc - y, yc - x, YELLOW);
+        }
+    }
+
+    // Bresenham's Circle Drawing Algorithm
+    void bresenhamCircle() {
+        int x = 0, y = r;
+        int d = 3 - 2 * r; // Initial decision parameter
+        putpixel(xc + x, yc + y, YELLOW);
+        putpixel(xc - x, yc + y, YELLOW);
+        putpixel(xc + x, yc - y, YELLOW);
+        putpixel(xc - x, yc - y, YELLOW);
+        putpixel(xc + y, yc + x, YELLOW);
+        putpixel(xc - y, yc + x, YELLOW);
+        putpixel(xc + y, yc - x, YELLOW);
+        putpixel(xc - y, yc - x, YELLOW);
+
+        while (x < y) {
+            x++;
+            if (d < 0) {
+                d = d + 4 * x + 6;
+            } else {
+                y--;
+                d = d + 4 * (x - y) + 10;
+            }
+            putpixel(xc + x, yc + y, YELLOW);
+            putpixel(xc - x, yc + y, YELLOW);
+            putpixel(xc + x, yc - y, YELLOW);
+            putpixel(xc - x, yc - y, YELLOW);
+            putpixel(xc + y, yc + x, YELLOW);
+            putpixel(xc - y, yc + x, YELLOW);
+            putpixel(xc + y, yc - x, YELLOW);
+            putpixel(xc - y, yc - x, YELLOW);
+        }
+    }
+
+public:
+    // Constructor to initialize center and radius of the circle
+    CircleDrawer(int centerX, int centerY, int radius) {
+        xc = centerX;
+        yc = centerY;
+        r = radius;
+    }
+
+    // Public method to draw the circle using DDA algorithm
+    void drawDDACircle() {
+        ddaCircle();
+    }
+
+    // Public method to draw the circle using Bresenham's algorithm
+    void drawBresenhamCircle() {
+        bresenhamCircle();
+    }
+};
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "");
+
+    // Create a CircleDrawer object for a circle with center (200, 200) and radius 100
+    CircleDrawer circle(200, 200, 100);
+    
+    // Drawing circle using DDA algorithm
+    circle.drawDDACircle();
+    delay(1000); // Delay to observe the DDA circle
+
+    // Drawing circle using Bresenham's algorithm
+    cleardevice(); // Clear the screen
+    circle.drawBresenhamCircle();
+
+    // Wait for user input to close the window
+    getch();
+    closegraph();
+    return 0;
+}
