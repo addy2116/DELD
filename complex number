@@ -1,0 +1,45 @@
+#include <iostream>
+#include <complex>  // For complex number operations
+
+using namespace std;
+
+int main() {
+    // Define two complex numbers
+    complex<double> num1, num2;
+    double real1, imag1, real2, imag2;
+
+    // Input for first complex number
+    cout << "Enter the real and imaginary parts of the first complex number (real imag): ";
+    cin >> real1 >> imag1;
+    num1 = complex<double>(real1, imag1);
+
+    // Input for second complex number
+    cout << "Enter the real and imaginary parts of the second complex number (real imag): ";
+    cin >> real2 >> imag2;
+    num2 = complex<double>(real2, imag2);
+
+    // Perform the mathematical operations
+    complex<double> sum = num1 + num2;
+    complex<double> difference = num1 - num2;
+    complex<double> product = num1 * num2;
+    complex<double> quotient;
+
+    // Check for division by zero
+    if (num2 != complex<double>(0, 0)) {
+        quotient = num1 / num2;
+    } else {
+        cout << "Error: Division by zero!" << endl;
+    }
+
+    // Display the results
+    cout << "\nResults:" << endl;
+    cout << "Sum: " << sum << endl;
+    cout << "Difference: " << difference << endl;
+    cout << "Product: " << product << endl;
+
+    if (num2 != complex<double>(0, 0)) {
+        cout << "Quotient: " << quotient << endl;
+    }
+
+    return 0;
+}
