@@ -1,0 +1,58 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Base Class
+class Person {
+protected:
+    string name;
+    int age;
+
+public:
+    // Constructor to initialize name and age
+    Person(string personName, int personAge) {
+        name = personName;
+        age = personAge;
+    }
+
+    // Function to display person details
+    void displayPersonInfo() const {
+        cout << "Name: " << name << endl;
+        cout << "Age: " << age << endl;
+    }
+};
+
+// Derived Class
+class Student : public Person {
+private:
+    int rollNumber;
+    float marks;
+
+public:
+    // Constructor to initialize Student-specific data and inherit Person data
+    Student(string studentName, int studentAge, int studentRollNo, float studentMarks)
+        : Person(studentName, studentAge)  // Calling base class constructor
+    {
+        rollNumber = studentRollNo;
+        marks = studentMarks;
+    }
+
+    // Function to display student details (overrides Person's display method)
+    void displayStudentInfo() const {
+        // Call the base class method to display name and age
+        displayPersonInfo();  
+        cout << "Roll Number: " << rollNumber << endl;
+        cout << "Marks: " << marks << endl;
+    }
+};
+
+// Main function
+int main() {
+    // Creating an object of Student class
+    Student student1("John Doe", 20, 101, 85.5);
+
+    cout << "Student Information:" << endl;
+    student1.displayStudentInfo();  // Display Student details
+
+    return 0;
+}
