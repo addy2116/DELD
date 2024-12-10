@@ -1,0 +1,79 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+// Forward declaration of friend class
+class StudentInfo;
+
+class Student {
+private:
+    char* name;
+    int age;
+    float marks;
+
+public:
+    // Constructor to initialize student data
+    Student(const char* studentName, int studentAge, float studentMarks) {
+        // Dynamic memory allocation for name
+        name = new char[strlen(studentName) + 1];
+        strcpy(name, studentName);
+        age = studentAge;
+        marks = studentMarks;
+
+        cout << "Student object created for " << name << endl;
+    }
+
+    // Destructor to free dynamically allocated memory
+    ~Student() {
+        delete[] name;
+        cout << "Student object destroyed for " << name << endl;
+    }
+
+    // Function to display student details
+    void display() const {
+        cout << "Name: " << name << endl;
+        cout << "Age: " << age << endl;
+        cout << "Marks: " << marks << endl;
+    }
+
+    // Friend function to access private data of Student
+    friend class StudentInfo;
+
+    // Function to show usage of this pointer
+    void showThisPointer() const {
+        cout << "Current Student Name from 'this' pointer: " << this->name << endl;
+    }
+};
+
+// Friend class to access Student's private members
+class StudentInfo {
+public:
+    // Function to display detailed student information
+    void showStudentDetails(const Student& student) {
+        cout << "Friend Class accessing Student's private data:" << endl;
+        cout << "Name: " << student.name << endl;
+        cout << "Age: " << student.age << endl;
+        cout << "Marks: " << student.marks << endl;
+    }
+};
+
+int main() {
+    // Creating a Student object dynamically
+    Student* student1 = new Student("John Doe", 20, 85.5);
+
+    // Displaying student information using the member function
+    student1->display();
+
+    // Using the 'this' pointer to access current object's name
+    student1->showThisPointer();
+
+    // Using the Friend Class to access private data
+    StudentInfo info;
+    info.showStudentDetails(*student1);
+
+    // Deleting the dynamically allocated student object
+    delete student1;
+
+    return 0;
+}
