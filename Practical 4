@@ -1,0 +1,109 @@
+#include <graphics.h>
+#include <iostream>
+#include <cmath>
+#include <vector>
+
+using namespace std;
+
+// Structure to represent a 2D point
+struct Point {
+    float x, y;
+};
+
+class Shape {
+private:
+    vector<Point> vertices;
+
+public:
+    // Constructor to initialize shape with a set of points
+    Shape(vector<Point> points) {
+        vertices = points;
+    }
+
+    // Function to draw the shape
+    void draw() {
+        for (size_t i = 0; i < vertices.size(); i++) {
+            int x1 = vertices[i].x, y1 = vertices[i].y;
+            int x2 = vertices[(i + 1) % vertices.size()].x;
+            int y2 = vertices[(i + 1) % vertices.size()].y;
+            line(x1, y1, x2, y2); // Draw line between consecutive points
+        }
+    }
+
+    // Scaling Transformation
+    void scale(float sx, float sy) {
+        for (auto &vertex : vertices) {
+            vertex.x *= sx;
+            vertex.y *= sy;
+        }
+    }
+
+    // Translation Transformation
+    void translate(float tx, float ty) {
+        for (auto &vertex : vertices) {
+            vertex.x += tx;
+            vertex.y += ty;
+        }
+    }
+
+    // Rotation Transformation
+    void rotate(float angle) {
+        float radian = angle * (M_PI / 180.0); // Convert angle to radians
+        float cosA = cos(radian);
+        float sinA = sin(radian);
+
+        for (auto &vertex : vertices) {
+            float x = vertex.x;
+            float y = vertex.y;
+            vertex.x = x * cosA - y * sinA;
+            vertex.y = x * sinA + y * cosA;
+        }
+    }
+};
+
+int main() {
+    // Initialize the graphics window
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "");
+
+    // Define a 2D object (e.g., a triangle)
+    vector<Point> triangle = {
+        {200, 150},  // Point 1 (x1, y1)
+        {250, 100},  // Point 2 (x2, y2)
+        {300, 150}   // Point 3 (x3, y3)
+    };
+
+    // Create a Shape object with the defined points
+    Shape myShape(triangle);
+
+    // Draw the original shape
+    setcolor(WHITE);
+    myShape.draw();
+
+    // Apply transformations: Scaling, Translation, and Rotation
+    delay(2000); // Wait for 2 seconds to observe the original shape
+
+    // Scaling (increase size by 1.5x)
+    setcolor(YELLOW);
+    myShape.scale(1.5, 1.5);
+    myShape.draw();
+
+    delay(2000); // Wait for 2 seconds to observe the scaled shape
+
+    // Translation (move 100 units in x and 50 units in y)
+    setcolor(GREEN);
+    myShape.translate(100, 50);
+    myShape.draw();
+
+    delay(2000); // Wait for 2 seconds to observe the translated shape
+
+    // Rotation (rotate 45 degrees counterclockwise)
+    setcolor(RED);
+    myShape.rotate(45);
+    myShape.draw();
+
+    // Wait for user input to close the window
+    getch();
+    closegraph();
+    return 0;
+}
