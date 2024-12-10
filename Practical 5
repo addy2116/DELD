@@ -1,0 +1,55 @@
+#include <graphics.h>
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+// Function to draw a triangle using 3 points (p1, p2, p3)
+void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3) {
+    line(x1, y1, x2, y2);
+    line(x2, y2, x3, y3);
+    line(x3, y3, x1, y1);
+}
+
+// Function to recursively draw the Sierpinski triangle
+void sierpinski(int x1, int y1, int x2, int y2, int x3, int y3, int depth) {
+    if (depth == 0) {
+        // Draw the triangle at the base case
+        drawTriangle(x1, y1, x2, y2, x3, y3);
+    } else {
+        // Find midpoints of the sides of the triangle
+        int mx1 = (x1 + x2) / 2;
+        int my1 = (y1 + y2) / 2;
+        int mx2 = (x2 + x3) / 2;
+        int my2 = (y2 + y3) / 2;
+        int mx3 = (x3 + x1) / 2;
+        int my3 = (y3 + y1) / 2;
+        
+        // Recurse for the 3 smaller triangles
+        sierpinski(x1, y1, mx1, my1, mx3, my3, depth - 1);
+        sierpinski(mx1, my1, x2, y2, mx2, my2, depth - 1);
+        sierpinski(mx3, my3, mx2, my2, x3, y3, depth - 1);
+    }
+}
+
+int main() {
+    // Initialize the graphics window
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "");
+
+    // Define the vertices of the initial triangle
+    int x1 = 400, y1 = 100;
+    int x2 = 200, y2 = 400;
+    int x3 = 600, y3 = 400;
+
+    // Depth of recursion (controls the number of fractal iterations)
+    int depth = 5;
+
+    // Draw the Sierpinski triangle fractal
+    sierpinski(x1, y1, x2, y2, x3, y3, depth);
+
+    // Wait for user input to close the window
+    getch();
+    closegraph();
+    return 0;
+}
