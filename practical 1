@@ -1,0 +1,82 @@
+#include <graphics.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+// Structure to represent a point (x, y)
+struct Point {
+    int x, y;
+};
+
+// Sort function to sort the edges by their y-coordinate
+bool compare(Point a, Point b) {
+    return a.y < b.y;
+}
+
+// Function to draw and fill the concave polygon using scan-line algorithm
+void scanlineFill(vector<Point>& polygon, int numPoints) {
+    int minY = INT_MAX, maxY = INT_MIN;
+
+    // Find the min and max y-coordinates to limit the scan range
+    for (int i = 0; i < numPoints; i++) {
+        minY = min(minY, polygon[i].y);
+        maxY = max(maxY, polygon[i].y);
+    }
+
+    // Loop through each scan line (y-coordinate)
+    for (int y = minY; y <= maxY; y++) {
+        vector<int> intersections;
+
+        // Find intersections of the scan line with the edges of the polygon
+        for (int i = 0; i < numPoints; i++) {
+            int x1 = polygon[i].x, y1 = polygon[i].y;
+            int x2 = polygon[(i + 1) % numPoints].x, y2 = polygon[(i + 1) % numPoints].y;
+
+            if (y1 == y2) continue;  // Skip horizontal edges
+
+            // Check if the scan line intersects with the edge
+            if ((y1 > y && y2 <= y) || (y2 > y && y1 <= y)) {
+                // Find the x-coordinate of the intersection
+                int x = x1 + (y - y1) * (x2 - x1) / (y2 - y1);
+                intersections.push_back(x);
+            }
+        }
+
+        // Sort the intersections from left to right
+        sort(intersections.begin(), intersections.end());
+
+        // Fill between the intersections
+        for (size_t i = 0; i < intersections.size(); i += 2) {
+            for (int x = intersections[i]; x <= intersections[i + 1]; x++) {
+                putpixel(x, y, YELLOW); // Fill color with yellow
+            }
+        }
+    }
+}
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "");
+
+    // Define points of the concave polygon
+    vector<Point> polygon = {{100, 100}, {200, 50}, {250, 150}, {200, 250}, {150, 200}, {50, 150}};
+    int numPoints = polygon.size();
+
+    // Draw the polygon
+    for (int i = 0; i < numPoints; i++) {
+        int x1 = polygon[i].x, y1 = polygon[i].y;
+        int x2 = polygon[(i + 1) % numPoints].x, y2 = polygon[(i + 1) % numPoints].y;
+        line(x1, y1, x2, y2);
+    }
+
+    // Fill the polygon using scanline algorithm
+    scanlineFill(polygon, numPoints);
+
+    // Wait for user input to close the window
+    getch();
+    closegraph();
+
+    return 0;
+}
