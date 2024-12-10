@@ -1,0 +1,72 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    // File name
+    string filename = "student_data.txt";
+
+    // 1. Write data to a file using ofstream
+    ofstream outFile(filename); // Open the file for writing
+    if (!outFile) {
+        cout << "Error opening file for writing!" << endl;
+        return 1;
+    }
+
+    outFile << "Student Name: John Doe\n";
+    outFile << "Age: 20\n";
+    outFile << "Marks: 85.5\n";
+    outFile << "-------------------------\n";
+    outFile << "Student Name: Alice Smith\n";
+    outFile << "Age: 22\n";
+    outFile << "Marks: 90.0\n";
+    outFile.close(); // Close the file after writing
+
+    cout << "Data written to " << filename << " successfully!" << endl;
+
+    // 2. Read data from the file using ifstream
+    ifstream inFile(filename); // Open the file for reading
+    if (!inFile) {
+        cout << "Error opening file for reading!" << endl;
+        return 1;
+    }
+
+    string line;
+    cout << "\nReading data from the file:\n";
+    while (getline(inFile, line)) {
+        cout << line << endl;
+    }
+    inFile.close(); // Close the file after reading
+
+    // 3. Append data to the file using ofstream in append mode
+    ofstream appendFile(filename, ios::app); // Open the file in append mode
+    if (!appendFile) {
+        cout << "Error opening file for appending!" << endl;
+        return 1;
+    }
+
+    appendFile << "-------------------------\n";
+    appendFile << "Student Name: Bob Brown\n";
+    appendFile << "Age: 21\n";
+    appendFile << "Marks: 88.5\n";
+    appendFile.close(); // Close the file after appending
+
+    cout << "\nData appended to " << filename << " successfully!" << endl;
+
+    // 4. Read the file again to verify the appended content
+    inFile.open(filename); // Open the file for reading again
+    if (!inFile) {
+        cout << "Error opening file for reading!" << endl;
+        return 1;
+    }
+
+    cout << "\nReading data from the file after appending:\n";
+    while (getline(inFile, line)) {
+        cout << line << endl;
+    }
+    inFile.close(); // Close the file after reading
+
+    return 0;
+}
