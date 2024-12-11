@@ -1,0 +1,57 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+
+struct PersonalRecord {
+    int id;
+    std::string name;
+    int age;
+
+    // Constructor for convenience
+    PersonalRecord(int id, std::string name, int age) : id(id), name(name), age(age) {}
+};
+
+// Comparator for sorting records by ID
+bool compareById(const PersonalRecord &a, const PersonalRecord &b) {
+    return a.id < b.id;
+}
+
+// Function to display personal records
+void displayRecords(const std::vector<PersonalRecord> &records) {
+    for (const auto &rec : records) {
+        std::cout << "ID: " << rec.id << ", Name: " << rec.name << ", Age: " << rec.age << "\n";
+    }
+}
+
+int main() {
+    // Create a vector of personal records
+    std::vector<PersonalRecord> records = {
+        {101, "Alice", 30},
+        {104, "Bob", 25},
+        {102, "Charlie", 28},
+        {105, "Diana", 22},
+        {103, "Eve", 35}
+    };
+
+    std::cout << "Original Personal Records:\n";
+    displayRecords(records);
+
+    // Sort records by ID
+    std::sort(records.begin(), records.end(), compareById);
+
+    std::cout << "\nPersonal Records Sorted by ID:\n";
+    displayRecords(records);
+
+    // Search for a personal record by ID using binary search
+    int searchId = 103;
+    auto it = std::lower_bound(records.begin(), records.end(), PersonalRecord(searchId, "", 0), compareById);
+
+    if (it != records.end() && it->id == searchId) {
+        std::cout << "\nRecord Found: ID: " << it->id << ", Name: " << it->name << ", Age: " << it->age << "\n";
+    } else {
+        std::cout << "\nRecord with ID " << searchId << " not found.\n";
+    }
+
+    return 0;
+}
