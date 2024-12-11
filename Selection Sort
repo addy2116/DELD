@@ -1,0 +1,70 @@
+#include <iostream>
+using namespace std;
+
+// Function template for Selection Sort
+template <typename T>
+void selectionSort(T arr[], int n) {
+    // One by one move boundary of unsorted subarray
+    for (int i = 0; i < n - 1; i++) {
+        // Find the minimum element in the unsorted array
+        int minIndex = i;
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        // Swap the found minimum element with the first element of the unsorted subarray
+        if (minIndex != i) {
+            T temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
+    }
+}
+
+// Function to print the array
+template <typename T>
+void printArray(T arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+    // Example 1: Sorting an array of integers
+    int arr1[] = {64, 25, 12, 22, 11};
+    int n1 = sizeof(arr1) / sizeof(arr1[0]);
+    cout << "Original Array (Integers): ";
+    printArray(arr1, n1);
+
+    selectionSort(arr1, n1);
+
+    cout << "Sorted Array (Integers): ";
+    printArray(arr1, n1);
+
+    // Example 2: Sorting an array of doubles
+    double arr2[] = {64.5, 25.3, 12.1, 22.4, 11.9};
+    int n2 = sizeof(arr2) / sizeof(arr2[0]);
+    cout << "\nOriginal Array (Doubles): ";
+    printArray(arr2, n2);
+
+    selectionSort(arr2, n2);
+
+    cout << "Sorted Array (Doubles): ";
+    printArray(arr2, n2);
+
+    // Example 3: Sorting an array of strings
+    string arr3[] = {"apple", "banana", "orange", "grape", "pear"};
+    int n3 = sizeof(arr3) / sizeof(arr3[0]);
+    cout << "\nOriginal Array (Strings): ";
+    printArray(arr3, n3);
+
+    selectionSort(arr3, n3);
+
+    cout << "Sorted Array (Strings): ";
+    printArray(arr3, n3);
+
+    return 0;
+}
